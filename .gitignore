@@ -1,0 +1,13 @@
+# 虚拟环境
+.venv/
+venv/
+
+# PyCharm配置
+.idea/
+
+# python缓存
+__pycache__/
+*.pyc
+
+#临时文件
+*.tmp
