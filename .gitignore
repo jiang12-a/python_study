@@ -1,4 +1,5 @@
 # 虚拟环境
+.venv1/
 .venv/
 venv/
 
@@ -8,6 +9,19 @@ venv/
 # python缓存
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
+
+# 忽略数据文件夹和压缩包
+Cat_Dog_Classification/PetImages/
+Cat_Dog_Classification/test_folder/
+machine_learning/data/
+machine_learning/mnist/
+*.zip
+*.tar.gz
+
+# 忽略所有模型权重文件和保存的模型
+*.pth
+*.pkl
 
 #临时文件
 *.tmp
