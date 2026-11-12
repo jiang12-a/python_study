@@ -14,7 +14,7 @@ torch.manual_seed(0)
 generator = torch.Generator().manual_seed(0)
 
 class DatasetFromSubset(Dataset):
-    def __init__(self, subset, transform=None):
+    def __init__(self, subset, transform = None):
         self.subset = subset
         self.transform = transform
 
@@ -40,15 +40,14 @@ val_transform = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ])
 
-image_path = os.path.abspath("./FlowersImages")
-assert os.path.exists(image_path), f"{image_path} 路径不存在！"
-
+image_path = os.path.abspath("D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\GoogleNet\\FlowersImages")
 dataset = datasets.ImageFolder(root = image_path)
 
+#划分训练集和测试集
 total_size = len(dataset)
 train_size = int(0.8 * total_size)
 val_size = total_size - train_size
-train_subset, val_subset = random_split(dataset, [train_size, val_size],generator = generator)
+train_subset, val_subset = random_split(dataset, [train_size, val_size] , generator = generator)
 
 train_dataset = DatasetFromSubset(train_subset, transform = train_transform)
 val_dataset = DatasetFromSubset(val_subset, transform = val_transform)
