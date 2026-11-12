@@ -1,10 +1,6 @@
 #object oriented programming 面向对象编程
 #类、构造函数、封装、继承、多态
 
-
-
-
-
 # # 第一部分：封装（侧重私有属性、访问控制，带易错坑）
 # ## 题1
 # 创建 `GameAccount` 游戏账号类
