@@ -1,6 +1,5 @@
 import os
 import sys
-import json
 import torch
 import torch.nn as nn
 from torchvision import transforms, datasets
@@ -13,14 +12,13 @@ from model import GoogLeNet
 
 torch.manual_seed(0)
 generator = torch.Generator().manual_seed(0)
-# 自定义 Dataset，用于解决 random_split 无法分别应用 transform 的问题
+
 class DatasetFromSubset(Dataset):
     def __init__(self, subset, transform=None):
         self.subset = subset
         self.transform = transform
 
     def __getitem__(self, index):
-        # subset 返回的是 PIL Image 和 label
         x, y = self.subset[index]
         if self.transform:
             x = self.transform(x)
