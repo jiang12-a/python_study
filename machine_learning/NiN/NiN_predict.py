@@ -5,9 +5,6 @@ from torchvision import transforms
 import os
 import glob
 
-# 自动GPU/CPU
-device = torch.device("cpu")
-
 transform = transforms.Compose([
     transforms.Resize((32, 32)),
     transforms.ToTensor(),
@@ -44,7 +41,7 @@ class NiN(nn.Module):
         return self.net(x)
 
 model = NiN()
-model.load_state_dict(torch.load(r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\nin_cifar10.pth", map_location=device))
+model.load_state_dict(torch.load(r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\NiN\\nin_cifar10.pth"))
 model.eval()
 
 classes = [

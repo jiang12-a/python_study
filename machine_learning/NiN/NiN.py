@@ -4,8 +4,6 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-device = torch.device("cpu")
-
 transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
@@ -73,4 +71,4 @@ for epoch in range(10):
     acc = correct / total
     print(f"Epoch {epoch + 1:2d} | Loss: {total_loss / len(train_loader):.4f} | Test Acc: {acc:.4f}")
 
-torch.save(model.state_dict(), r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\nin_cifar10.pth")
+torch.save(model.state_dict(), r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\NiN\\nin_cifar10.pth")
