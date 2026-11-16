@@ -73,7 +73,7 @@ def predict_folder(folder_path):
             print(f"{filename:<20} | 图片读取失败")
 
 if __name__ == "__main__":
-    test_folder = "D:\\PyCharm\\pychram\\Python_Base_Study\\Cat_Dog_Classification\\test_folder"
+    test_folder = "D:\\PyCharm\\pychram\\Python_Base_Study\\Cat_Dog_Classification\\predict_folder"
     predict_folder(test_folder)
 
 

@@ -64,5 +64,5 @@ def predict_folder(folder_path):
             print(f"{filename:<20} | 图片读取或预测失败")
 
 if __name__ == "__main__":
-    test_folder = r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\GoogleNet\\test"
+    test_folder = r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\GoogleNet\\predict_folder"
     predict_folder(test_folder)
