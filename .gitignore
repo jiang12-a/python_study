@@ -13,7 +13,7 @@ __pycache__/
 
 # 忽略数据文件夹和压缩包
 Cat_Dog_Classification/PetImages/
-Cat_Dog_Classification/test_folder/
+Cat_Dog_Classification/predict_folder/
 machine_learning/data/
 machine_learning/mnist/
 *.zip

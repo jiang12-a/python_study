@@ -1,6 +1,7 @@
 import os
 import json
 import torch
+import time
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import transforms
@@ -8,23 +9,24 @@ from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 from model import ResNet
 
+log_path = r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\train_log.txt"
 
 class Food101Dataset(Dataset):
-    def __init__(self, root_dir, json_file, transform=None):
+    def __init__(self, root_dir, json_file, transform = None):
         self.root_dir = root_dir
         self.transform = transform
         self.image_paths = []
         self.labels = []
+        self.class_to_idx = {}
+        new_labels = []
 
-        # 1. 解析 JSON 文件
-        with open(json_file, 'r', encoding='utf-8') as f:
+        with open(json_file, "r", encoding = "utf-8") as f:
             data = json.load(f)
 
-        # 2. 遍历 JSON 中的 images 列表
         for item in data.get("images", []):
-            file_name = item["file_name"]  # 例如: "apple_pie_003.jpg"
+            file_name = item["file_name"]
 
-            # 提取类别名称：apple_pie_003.jpg -> apple_pie
+            # rsplit从右往左切，然后按照 "_" 将其换成两个字符串
             cls_name = file_name.rsplit('_', 1)[0]
 
             # 拼接完整图片路径：root_dir + /images/ + 文件名
@@ -33,13 +35,15 @@ class Food101Dataset(Dataset):
             self.image_paths.append(img_path)
             self.labels.append(cls_name)
 
-        # 3. 将字符串类别转换为数字索引 (0~100)
-        unique_classes = sorted(list(set(self.labels)))
-        self.class_to_idx = {cls_name: i for i, cls_name in enumerate(unique_classes)}
+        unique_classes = sorted(list(set(self.labels)))     #set()自动去重
+        for i, cls_name in enumerate(unique_classes):   #enumerate()将列表中每个元素及其索引返回
+            self.class_to_idx[cls_name] = i
         self.classes = unique_classes
 
-        # 4. 替换为数字标签
-        self.labels = [self.class_to_idx[cls_name] for cls_name in self.labels]
+        for cls_name in self.labels:
+            number = self.class_to_idx[cls_name]
+            new_labels.append(number)
+        self.labels = new_labels
 
     def __len__(self):
         return len(self.image_paths)
@@ -54,24 +58,28 @@ class Food101Dataset(Dataset):
 
 def main():
 
+    with open(log_path, "w", encoding = "utf-8") as f:
+        f.write(f"训练开始时间：{time.strftime('%Y-%m-%d %H:%M:%S')} ")
+
     train_transform = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize(256),  # 短边变 256，长边等比例缩小
+        transforms.RandomCrop(224),  #随机裁剪 224x224，能增强泛化能力
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(10),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2),
+        transforms.ColorJitter(brightness = 0.2 , contrast = 0.2),
         transforms.ToTensor(),
         transforms.Normalize((0.545, 0.445, 0.344), (0.229, 0.226, 0.225))
     ])
 
     val_transform = transforms.Compose([
-        transforms.Resize((224, 224)),
+        transforms.Resize(256),
+        transforms.RandomCrop(224),
         transforms.ToTensor(),
         transforms.Normalize((0.545, 0.445, 0.344), (0.229, 0.226, 0.225))
     ])
 
     train_root = ("D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\Food101\\test")
     train_json = ("D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\Food101\\test\\test.json")
-
     val_root = ("D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\Food101\\val")
     val_json = ("D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\Food101\\val\\val.json")
 
@@ -113,11 +121,19 @@ def main():
                 correct += (predicted == label).sum().item()
 
         acc = correct / total
-        print(f"Epoch [{epoch + 1}/{epochs}] | Loss: {total_loss / len(train_loader):.4f} | Val Acc: {acc:.4f}")
+        log_text = f"Epoch [{epoch + 1}/{epochs}] | Loss: {total_loss / len(train_loader):.4f} | Val Acc: {acc:.4f}\n"
+        print(log_text.strip())
+        with open(log_path, "a", encoding = "utf-8") as f:
+            f.write(log_text)
 
         if acc > best_acc:
             best_acc = acc
-            torch.save(model.state_dict(), "D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\best.pth")
+            save_dict = {
+                "epoch": epoch + 1,
+                "best_acc": best_acc,
+                "model_state_dict": model.state_dict()
+            }
+            torch.save(save_dict, r"D:\\PyCharm\\pychram\\Python_Base_Study\\machine_learning\\ResNet\\best.pth")
 
 if __name__ == '__main__':
     main()

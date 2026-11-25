@@ -88,7 +88,7 @@ for epoch in range(1000):
     # w3_list.append(model[4].weight.item())
 
     if epoch % 50 == 0:
-        print(f"epoch:{epoch + 1} , train loss:{loss.item()} , test loss:{test_loss.item()}")
+        print(f"epoch:{epoch + 1} , train loss:{loss.item()} , predit_folder loss:{test_loss.item()}")
         # print(f"当前的w1 = {model[0].weight.data}")
         # print(f"当前的w2 = {model[2].weight.data}")
         # print(f"当前的w3 = {model[4].weight.data}")
@@ -97,7 +97,7 @@ fig, ax1,  = plt.subplots(1, 1, figsize=(8,6))
 
 #loss曲线
 ax1.plot(epoch_list, train_loss_list, color = "red" , label = "train loss")
-ax1.plot(epoch_list, test_loss_list, color = "blue" , label = "test loss")
+ax1.plot(epoch_list, test_loss_list, color = "blue" , label = "predit_folder loss")
 ax1.set_title("LOSS 随训练轮次变化")
 ax1.set_xlabel("epoch")
 ax1.set_ylabel("loss")

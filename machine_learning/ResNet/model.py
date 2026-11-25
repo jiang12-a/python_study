@@ -53,7 +53,7 @@ class MakeLayers(nn.Module):
         return self.layers(x)
 #ResNet
 class ResNet(nn.Module):
-    def __init__(self , num_classes = 1000):
+    def __init__(self , num_classes = 101):
         super(ResNet,self).__init__()
         #前置层
         self.pre = PreLayer()
@@ -71,7 +71,7 @@ class ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-        x = F.avg_pool2d(x , 7)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0) , -1)
         x = self.classifier(x)
         return x
