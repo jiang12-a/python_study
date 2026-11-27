@@ -4,13 +4,14 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import random
+import time
 
 random.seed(42)
 torch.manual_seed(42)
 generator = torch.Generator().manual_seed(42)
 
-device = torch.device("cpu")
-data_dir = "D:\\PyCharm\\pychram\\Python_Base_Study\\Cat_Dog_Classification\\PetImages"
+device = torch.device("mps")
+data_dir = "/Users/j/Desktop/python_study/Cat_Dog_Classification/PetImages "
 
 #计算数据集的均值（mean）和标准差（std）
 calc_transform = transforms.Compose([
@@ -71,15 +72,20 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-model = SimpleCNN()
+model = SimpleCNN().to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr = 0.001)
+log_path = "/Users/j/Desktop/python_study/Cat_Dog_Classification/train_log.txt"
+
+with open(log_path, "w", encoding="utf-8") as f:
+    f.write(f"训练开始时间：{time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 for epoch in range(10):
     model.train()
     running_loss = 0.0
     for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(images)
         loss = criterion(outputs, labels)
@@ -94,12 +100,16 @@ for epoch in range(10):
     total = 0
     with torch.no_grad():
         for images, labels in val_loader:
+            images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(f"Epoch [{epoch+1}/{10}], Loss: {running_loss/len(train_loader):.4f}, Val Acc: {100*correct/total:.2f}%\n")
+
     print(
         f"Epoch {epoch + 1} / 10, Loss: {running_loss / len(train_loader):.4f}, Val Acc: {100 * correct / total:.2f}%")
 
-torch.save(model.state_dict(), r"D:\\PyCharm\\pychram\\Python_Base_Study\\Cat_Dog_Classification\\cat_dog_cnn.pth")
+torch.save(model.state_dict(), r"/Users/j/Desktop/python_study/Cat_Dog_Classification/cat_dog_cnn.pth")
